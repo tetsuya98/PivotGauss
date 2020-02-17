@@ -117,14 +117,35 @@ int findR(int m, int n, int S, double T[n+m+1][m+1]) { //trouve la ligne du pivo
     return -1;
 }
 
-void pivot(int S, int R, double pivot, double T[n+m+1][m+1]) {
+void pivoter(int S, int R, double pivot, double T[n+m+1][m+1]) {
+    double alpha;
+    for (int i = 0; i < m+n+1; i++) {
+        T[i][R] = T[i][R] / pivot;
+    }
+    for (int i = 0; i < m+1; i++) {
+        if (i != R) {
+            alpha = T[S][i] * -1;
+            for (int j = 0; j < m+n+1; j++) {
+                T[j][i] = T[j][i] + alpha * T[j][R];
+            }
+        }
+    }
+    
+    printf("----------Tableau----------\n");
+    
+    for (int i = 0; i < m+1; i++) {
+        for (int j = 0; j < m+n+1; j++) {
+            printf("| %f |", T[j][i]);
+        }
+        printf("\n");
+    }
     
 }
 
 int main(int argc, const char * argv[]) {
     
     double T[n+m+1][m+1];
-    int R = -1, S = -1;
+    int R = -2, S = -2;
     double pivot = -1;
     createT(n, m, c, a, b, T);
     
@@ -137,12 +158,20 @@ int main(int argc, const char * argv[]) {
         printf("\n");
     }
     
-    printf("-----------Pivot-----------\n");
-    S = findS(m, n, T);
-    R = findR(m, n, S, T);
-    pivot = T[S][R];
+    while (S != -1 && R != -1) {
+        printf("-----------Pivot-----------\n");
+        S = findS(m, n, T);
+        R = findR(m, n, S, T);
+        pivot = T[S][R];
+        
+        printf("S : %d, R : %d, pivot : %f\n", S, R, pivot);
+        
+        if (R != -1 && S != -1) {
+            pivoter(S, R, pivot, T);
+        }
+    }
     
-    printf("S : %d, R : %d, pivot : %f\n", S, R, pivot);
+    
     
     return 0;
 }
